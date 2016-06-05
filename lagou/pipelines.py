@@ -7,6 +7,7 @@
 import pymongo
 from pymongo.collection import Collection
 from pymongo.database import Database
+import datetime
 
 from lagou.items import LagouItem
 # from data_model import DBSession, JobBrief
@@ -45,13 +46,14 @@ class LagouPipeline(_BaseMongoPipeline):
 
         :param item:
         :param spider:
-        :type item: LagouItem
+        :type data: LagouItem
         :return:
         """
 
-        item = dict(item)
+        data = dict(item)
+        data['datetime'] = datetime.datetime.now()
 
-        self.collection.insert_one(item)
+        self.collection.insert_one(data)
 
         return item
 
@@ -60,15 +62,16 @@ class JobDetailPipeline(_BaseMongoPipeline):
     def __init__(self):
         super(JobDetailPipeline, self).__init__()
 
-        self.collection_naem = settings['MONGODB_COLLECTION_DETAIL']
+        self.collection_name = settings['MONGODB_COLLECTION_DETAIL']
 
     def open_spider(self, spider):
         self.collection = self.db[self.collection_name]
 
     def process_item(self, item, spider):
 
-        item = dict(item)
+        data = dict(item)
+        data['datetime'] = datetime.datetime.now()
 
-        self.collection.insert_one(item)
+        self.collection.insert_one(data)
 
         return item
