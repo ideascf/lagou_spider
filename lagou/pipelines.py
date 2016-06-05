@@ -9,7 +9,7 @@ from pymongo.collection import Collection
 from pymongo.database import Database
 import datetime
 
-from lagou.items import LagouItem
+from lagou.items import PositionItem, JobDetailItem
 # from data_model import DBSession, JobBrief
 
 import config
@@ -33,9 +33,9 @@ class _BaseMongoPipeline(object):
         raise NotImplementedError()
 
 
-class LagouPipeline(_BaseMongoPipeline):
+class PositionPipeline(_BaseMongoPipeline):
     def __init__(self):
-        super(LagouPipeline, self).__init__()
+        super(PositionPipeline, self).__init__()
 
         self.collection_name = config.MONGODB_COLLECTION_BRIEF
 
@@ -47,9 +47,12 @@ class LagouPipeline(_BaseMongoPipeline):
 
         :param item:
         :param spider:
-        :type data: LagouItem
+        :type data: PositionItem
         :return:
         """
+
+        if not isinstance(item, PositionItem):
+            return item
 
         data = dict(item)
         data['datetime'] = datetime.datetime.now()
@@ -69,6 +72,8 @@ class JobDetailPipeline(_BaseMongoPipeline):
         self.collection = self.db[self.collection_name]
 
     def process_item(self, item, spider):
+        if not isinstance(item, JobDetailItem):
+            return item
 
         data = dict(item)
         data['datetime'] = datetime.datetime.now()

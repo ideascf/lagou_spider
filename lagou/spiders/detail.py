@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
 import scrapy
+import pymongo
 from scrapy.http import Response
 from bs4 import BeautifulSoup
 
 from lagou.items import JobDetailItem
+from util import tools
 
 class DetailSpider(scrapy.Spider):
     name = "detail"
@@ -14,10 +16,16 @@ class DetailSpider(scrapy.Spider):
     )
 
     job_url_fmt = 'http://www.lagou.com/jobs/{job_id}.html'
-    job_ids = []
 
     def start_requests(self):
-        for job_id in self.job_ids:
+        client = tools.get_mongo_client()
+        db = tools.get_lagou_db(client)
+        brief_collection = tools.get_job_brief_collection(db)
+
+        result = brief_collection.find({}, {'position_id':1, '_id': 0})
+        position_ids = (each['position_id'] for each in result)
+
+        for job_id in position_ids:
             yield self._gen_form_req(job_id)
 
     def parse(self, response):

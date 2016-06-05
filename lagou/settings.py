@@ -67,8 +67,8 @@ CONCURRENT_REQUESTS = 32
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'lagou.pipelines.LagouPipeline': 20,
-    # 'lagou.pipelines.JobDetailPipeline': 20,
+    'lagou.pipelines.PositionPipeline': 20,
+    'lagou.pipelines.JobDetailPipeline': 20,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

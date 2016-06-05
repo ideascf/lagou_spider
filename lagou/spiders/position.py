@@ -6,7 +6,7 @@ import functools
 from scrapy.log import logger
 from scrapy.http import Response
 
-from lagou.items import LagouItem
+from lagou.items import PositionItem
 import config
 
 class PositionSpider(scrapy.Spider):
@@ -43,23 +43,18 @@ class PositionSpider(scrapy.Spider):
 
         logger.debug(response.body)
 
-        item = LagouItem()
+        item = PositionItem()
         job_data = json.loads(response.body.decode('utf8'))
         job_content = job_data['content']
         job_position_result = job_content['positionResult']
         job_result = job_position_result['result']
 
         for each in job_result:
-            item['city'] = each['city']
-            item['keyword'] = keyword
-
-            item['company_size'] = each['companySize']
+            item['company_id'] = each['companyId']
             item['company_name'] = each['companyName']
+            item['company_size'] = each['companySize']
             item['company_label_list'] = each['companyLabelList']
-
-            item['position_name'] = each['positionName']
-            item['position_type'] = each['positionType']
-            item['position_advantage'] = each['positionAdvantage']
+            item['company_logo'] = each['companyLogo']
 
             salary = each['salary']
             salary = salary.split('-')
@@ -69,6 +64,25 @@ class PositionSpider(scrapy.Spider):
                 item['salary_max'] = self._float_salary(salary[1])
             item['salary_min'] = self._float_salary(salary[0])
             item['salary_avg'] = (item['salary_max'] + item['salary_min']) / 2
+            item['position_id'] = each['positionId']
+            item['position_name'] = each['positionName']
+            item['position_first_type'] = each['positionFirstType']
+            item['position_type'] = each['positionType']
+            item['position_advantage'] = each['positionAdvantage']
+
+            item['work_year'] = each['workYear']
+            item['education'] = each['education']
+            item['job_nature'] = each['jobNature']
+
+            item['city'] = each['city']
+            item['keyword'] = keyword
+            item['industry_field'] = each['industryField']
+            item['district'] = each['district']
+            item['finance_stage'] = each['financeStage']
+            item['leader'] = each['leaderName']
+            item['job_create_time'] = each['createTime']
+
+
 
             yield item
 
