@@ -23,8 +23,6 @@ class PositionSpider(scrapy.Spider):
             yield self._gen_form_req(1, kw, callback=functools.partial(self.parse_initial_page, keyword=kw))
 
     def parse_initial_page(self, response, keyword):
-        logger.debug(response.body)
-
         job_data = json.loads(response.body.decode('utf8'))
         job_content = job_data['content']
         job_position_result = job_content['positionResult']
