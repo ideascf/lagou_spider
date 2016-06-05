@@ -7,6 +7,7 @@ from scrapy.log import logger
 from scrapy.http import Response
 
 from lagou.items import LagouItem
+import config
 
 class PositionSpider(scrapy.Spider):
     name = "position"
@@ -16,11 +17,9 @@ class PositionSpider(scrapy.Spider):
     )
 
     position_url = 'http://www.lagou.com/jobs/positionAjax.json?'
-    keywords = ['go', 'python', '后端']
-    JOB_PER_PAGE = 15
 
     def start_requests(self):
-        for kw in self.keywords:
+        for kw in config.LAGOU_KEYWORDS:
             yield self._gen_form_req(1, kw, callback=functools.partial(self.parse_initial_page, keyword=kw))
 
     def parse_initial_page(self, response, keyword):
@@ -30,7 +29,7 @@ class PositionSpider(scrapy.Spider):
         job_content = job_data['content']
         job_position_result = job_content['positionResult']
 
-        total_page_num = math.ceil(job_position_result['totalCount'] / self.JOB_PER_PAGE)
+        total_page_num = math.ceil(job_position_result['totalCount'] / config.LAGOU_JOB_PER_PAGE)
         for pagenum in range(1, total_page_num):
             yield self._gen_form_req(pagenum, keyword, callback=functools.partial(self.parse_page, keyword=keyword))
 
@@ -50,7 +49,6 @@ class PositionSpider(scrapy.Spider):
         job_position_result = job_content['positionResult']
         job_result = job_position_result['result']
 
-        self.total_page_num = math.ceil(job_position_result['totalCount'] / self.JOB_PER_PAGE)
         for each in job_result:
             item['city'] = each['city']
             item['keyword'] = keyword

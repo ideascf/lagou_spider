@@ -11,13 +11,14 @@ import datetime
 
 from lagou.items import LagouItem
 # from data_model import DBSession, JobBrief
-from scrapy.conf import settings
+
+import config
 
 class _BaseMongoPipeline(object):
     def __init__(self):
-        host = settings['MONGODB_HOST']
-        port = settings['MONGODB_PORT']
-        dbname = settings['MONGODB_NAME']
+        host = config.MONGODB_HOST
+        port = config.MONGODB_PORT
+        dbname = config.MONGODB_NAME
 
         self.client = pymongo.MongoClient(host, port)
         """:type: pymongo.MongoClient"""
@@ -36,7 +37,7 @@ class LagouPipeline(_BaseMongoPipeline):
     def __init__(self):
         super(LagouPipeline, self).__init__()
 
-        self.collection_name = settings['MONGODB_COLLECTION_BRIEF']
+        self.collection_name = config.MONGODB_COLLECTION_BRIEF
 
     def open_spider(self, spider):
         self.collection = self.db[self.collection_name]
@@ -62,7 +63,7 @@ class JobDetailPipeline(_BaseMongoPipeline):
     def __init__(self):
         super(JobDetailPipeline, self).__init__()
 
-        self.collection_name = settings['MONGODB_COLLECTION_DETAIL']
+        self.collection_name = config.MONGODB_COLLECTION_DETAIL
 
     def open_spider(self, spider):
         self.collection = self.db[self.collection_name]

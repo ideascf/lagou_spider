@@ -26,13 +26,6 @@ ROBOTSTXT_OBEY = True
 CONCURRENT_REQUESTS = 32
 
 
-MONGODB_HOST = '127.0.0.1'
-MONGODB_PORT = 27017
-MONGODB_NAME = 'lagou_job'
-MONGODB_COLLECTION_BRIEF = 'job_brief'
-MONGODB_COLLECTION_DETAIL = 'job_detail'
-
-
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
