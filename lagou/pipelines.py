@@ -10,19 +10,16 @@ from pymongo.database import Database
 import datetime
 
 from lagou.items import PositionItem, JobDetailItem
+from util import tools
 # from data_model import DBSession, JobBrief
 
 import config
 
 class _BaseMongoPipeline(object):
     def __init__(self):
-        host = config.MONGODB_HOST
-        port = config.MONGODB_PORT
-        dbname = config.MONGODB_NAME
-
-        self.client = pymongo.MongoClient(host, port)
+        self.client = tools.get_mongo_client()
         """:type: pymongo.MongoClient"""
-        self.db = self.client[dbname]
+        self.db = tools.get_lagou_db(self.client)
         """:type: Database"""
         self.collection_name = ''
         self.collection = None
@@ -34,13 +31,8 @@ class _BaseMongoPipeline(object):
 
 
 class PositionPipeline(_BaseMongoPipeline):
-    def __init__(self):
-        super(PositionPipeline, self).__init__()
-
-        self.collection_name = config.MONGODB_COLLECTION_BRIEF
-
     def open_spider(self, spider):
-        self.collection = self.db[self.collection_name]
+        self.collection = tools.get_job_brief_collection(self.db)
 
     def process_item(self, item, spider):
         """
@@ -63,13 +55,8 @@ class PositionPipeline(_BaseMongoPipeline):
 
 
 class JobDetailPipeline(_BaseMongoPipeline):
-    def __init__(self):
-        super(JobDetailPipeline, self).__init__()
-
-        self.collection_name = config.MONGODB_COLLECTION_DETAIL
-
     def open_spider(self, spider):
-        self.collection = self.db[self.collection_name]
+        self.collection = tools.get_job_detail_collection(self.db)
 
     def process_item(self, item, spider):
         if not isinstance(item, JobDetailItem):

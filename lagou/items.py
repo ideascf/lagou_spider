@@ -41,7 +41,7 @@ class PositionItem(scrapy.Item):
     finance_stage = scrapy.Field()  # 发展阶段
     leader = scrapy.Field()  # 公司领导人
     job_create_time = scrapy.Field()  # 职位发布时间
-    
+
 
 class JobDetailItem(scrapy.Item):
     job_id = scrapy.Field()
